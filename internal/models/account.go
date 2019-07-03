@@ -7,10 +7,3 @@ type Account struct {
 	LastName     string    `json:"last_name,omitempty"`
 	Location     *Location `json:"location,omitempty"`
 }
-
-type Location struct {
-	City      string `json:"city,omitempty"`
-	State     string `json:"state,omitempty"`
-	Country   string `json:"country,omitempty"`
-	IpAddress string `json:"ip_address,omitempty"`
-}
