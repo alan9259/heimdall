@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"log"
-	model "miu-auth-api-v1/internal/models"
+	model "miu-auth-api-v1/internal/model"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -30,4 +30,5 @@ func main() {
 	router.HandleFunc("/logout", Logout).Methods("POST")
 	router.HandleFunc("/register", Register).Methods("POST")
 	log.Fatal(http.ListenAndServe(":12345", router))
+
 }
