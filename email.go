@@ -9,12 +9,12 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func main() {
-	from := mail.NewEmail("Zhe Wu", "Sender Email address")
-	subject := "Sending with SendGrid is Fun"
-	to := mail.NewEmail("Jason Wu", "Receiver Email address")
-	plainTextContent := "and easy to do anywhere, even with Go"
-	htmlContent := "<strong>and easy to do anywhere, even with Go</strong>"
+func SendEmail(Sender string, SenderEmail string, Subject string, Receiver string, ReceiverEmail string, EmailContent string) {
+	from := mail.NewEmail(Sender, SenderEmail)
+	subject := Subject
+	to := mail.NewEmail(Receiver, ReceiverEmail)
+	plainTextContent := EmailContent
+	htmlContent := "<strong>" + EmailContent + "</strong>"
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY")) // key was passed in as env variable
 
