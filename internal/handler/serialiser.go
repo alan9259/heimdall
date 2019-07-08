@@ -32,9 +32,9 @@ func (r *registerRequest) bind(c echo.Context, a *model.Account) error {
 
 type loginRequest struct {
 	Account struct {
-		EmailAddress string `json:"email_address" validate:"required,email_address"`
+		EmailAddress string `json:"email_address" validate:"required,email"`
 		Password     string `json:"password" validate:"required"`
-	} `json:"user"`
+	} `json:"account"`
 }
 
 func (r *loginRequest) bind(c echo.Context) error {

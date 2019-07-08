@@ -1,6 +1,27 @@
 package main
 
 import (
+	"miu-auth-api-v1/internal/handler"
+	"miu-auth-api-v1/internal/router"
+)
+
+func main() {
+	r := router.New()
+	v1 := r.Group("/api")
+
+	/*d := platform.New()
+	db.AutoMigrate(d)
+
+	as := platform.NewAccountStore(d)
+	ls := platform.NewLocationStore(d)
+	h := handler.NewHandler(as, ls)*/
+
+	h := handler.NewMockHandler()
+	h.Register(v1)
+	r.Logger.Fatal(r.Start("127.0.0.1:8585"))
+}
+
+/*import (
 	"encoding/json"
 	"log"
 	model "miu-auth-api-v1/internal/model"
@@ -31,4 +52,4 @@ func main() {
 	router.HandleFunc("/register", Register).Methods("POST")
 	log.Fatal(http.ListenAndServe(":12345", router))
 
-}
+}*/
