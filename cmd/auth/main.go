@@ -9,14 +9,13 @@ func main() {
 	r := router.New()
 	v1 := r.Group("/api")
 
-	/*d := platform.New()
-	db.AutoMigrate(d)
+	d := platform.New()
+	//db.AutoMigrate(d)
 
 	as := platform.NewAccountStore(d)
 	ls := platform.NewLocationStore(d)
-	h := handler.NewHandler(as, ls)*/
+	h := handler.NewHandler(as, ls)
 
-	h := handler.NewMockHandler()
 	h.Register(v1)
 	r.Logger.Fatal(r.Start("127.0.0.1:8585"))
 }
