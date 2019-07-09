@@ -2,7 +2,7 @@ package platform
 
 import (
 	"fmt"
-
+	"log"
 	"os"
 
 	"miu-auth-api-v1/internal/model"
@@ -23,12 +23,21 @@ func New() *gorm.DB {
 }
 
 func TestDB() *gorm.DB {
-	db, err := gorm.Open("postgres", "host=localhost password=WorkHappily123 user=postgres dbname=dbmessyitup sslmode=disable connect_timeout=30")
+	db, err := gorm.Open(
+		"postgres",
+		"host=localhost password=WorkHappily123 user=postgres dbname=dbmessyitup sslmode=disable connect_timeout=30")
 
 	if err != nil {
+		log.Fatalln("Can't connect to the db: ", err)
 		fmt.Println("storage err: ", err)
 	}
-	db.DB().SetMaxIdleConns(3)
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Fatalln("Can't close the db connection: ", err)
+		}
+	}()
+
+	//db.DB().SetMaxIdleConns(3)
 	db.LogMode(false)
 	return db
 }
@@ -42,6 +51,10 @@ func DropTestDB() error {
 
 //TODO: err check
 func AutoMigrate(db *gorm.DB) {
+	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
+		return "miu." + defaultTableName
+	}
+
 	db.AutoMigrate(
 		&model.Account{},
 		&model.Location{},

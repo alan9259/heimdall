@@ -12,7 +12,7 @@ func main() {
 	v1 := r.Group("/api")
 
 	d := platform.New()
-	//platform.AutoMigrate(d)
+	platform.AutoMigrate(d)
 
 	as := store.NewAccountStore(d)
 	ls := store.NewLocationStore(d)
