@@ -5,14 +5,15 @@ import (
 
 	"os"
 
+	"miu-auth-api-v1/internal/model"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"miu-auth-api-v1/internal/model"
 )
 
 func New() *gorm.DB {
 	db, err := gorm.Open("postgres", "host=localhost password=WorkHappily123 user=postgres dbname=dbmessyitup sslmode=disable connect_timeout=30")
-  	defer db.Close()
+	//defer db.Close()
 	if err != nil {
 		fmt.Println("storage err: ", err)
 	}
@@ -22,7 +23,8 @@ func New() *gorm.DB {
 }
 
 func TestDB() *gorm.DB {
-	db, err := gorm.Open("sqlite3", "./../realworld_test.db")
+	db, err := gorm.Open("postgres", "host=localhost password=WorkHappily123 user=postgres dbname=dbmessyitup sslmode=disable connect_timeout=30")
+
 	if err != nil {
 		fmt.Println("storage err: ", err)
 	}
@@ -42,6 +44,6 @@ func DropTestDB() error {
 func AutoMigrate(db *gorm.DB) {
 	db.AutoMigrate(
 		&model.Account{},
-		&model.Location{}
+		&model.Location{},
 	)
 }

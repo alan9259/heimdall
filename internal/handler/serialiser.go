@@ -9,7 +9,7 @@ import (
 
 type registerRequest struct {
 	Account struct {
-		EmailAddress string `json:"email_address" validate:"required,email_address"`
+		EmailAddress string `json:"email_address" validate:"required,email"`
 		Password     string `json:"password" validate:"required"`
 	} `json:"account"`
 }

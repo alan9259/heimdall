@@ -10,6 +10,12 @@ type AccountStore struct {
 	db *gorm.DB
 }
 
+func NewAccountStore(db *gorm.DB) *AccountStore {
+	return &AccountStore{
+		db: db,
+	}
+}
+
 func (as *AccountStore) Create(a *model.Account) (err error) {
 	return as.db.Create(a).Error
 }

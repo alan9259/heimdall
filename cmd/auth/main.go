@@ -2,7 +2,9 @@ package main
 
 import (
 	"miu-auth-api-v1/internal/handler"
+	"miu-auth-api-v1/internal/platform"
 	"miu-auth-api-v1/internal/router"
+	"miu-auth-api-v1/internal/store"
 )
 
 func main() {
@@ -10,10 +12,10 @@ func main() {
 	v1 := r.Group("/api")
 
 	d := platform.New()
-	//db.AutoMigrate(d)
+	//platform.AutoMigrate(d)
 
-	as := platform.NewAccountStore(d)
-	ls := platform.NewLocationStore(d)
+	as := store.NewAccountStore(d)
+	ls := store.NewLocationStore(d)
 	h := handler.NewHandler(as, ls)
 
 	h.Register(v1)
