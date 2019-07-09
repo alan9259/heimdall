@@ -16,7 +16,3 @@ func NewHandler(as account.Store, ls location.Store) *Handler {
 		locationStore: ls,
 	}
 }
-
-func NewMockHandler() *Handler {
-	return &Handler{}
-}

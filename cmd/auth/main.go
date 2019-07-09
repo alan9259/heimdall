@@ -2,21 +2,22 @@ package main
 
 import (
 	"miu-auth-api-v1/internal/handler"
+	"miu-auth-api-v1/internal/platform"
 	"miu-auth-api-v1/internal/router"
+	"miu-auth-api-v1/internal/store"
 )
 
 func main() {
 	r := router.New()
 	v1 := r.Group("/api")
 
-	/*d := platform.New()
-	db.AutoMigrate(d)
+	d := platform.New()
+	platform.AutoMigrate(d)
 
-	as := platform.NewAccountStore(d)
-	ls := platform.NewLocationStore(d)
-	h := handler.NewHandler(as, ls)*/
+	as := store.NewAccountStore(d)
+	ls := store.NewLocationStore(d)
+	h := handler.NewHandler(as, ls)
 
-	h := handler.NewMockHandler()
 	h.Register(v1)
 	r.Logger.Fatal(r.Start("127.0.0.1:8585"))
 }
