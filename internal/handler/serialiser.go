@@ -8,10 +8,8 @@ import (
 )
 
 type registerRequest struct {
-	Account struct {
-		EmailAddress string `json:"email_address" validate:"required,email"`
-		Password     string `json:"password" validate:"required"`
-	} `json:"account"`
+	EmailAddress string `json:"email_address" validate:"required,email"`
+	Password     string `json:"password" validate:"required"`
 }
 
 func (r *registerRequest) bind(c echo.Context, a *model.Account) error {
@@ -21,8 +19,8 @@ func (r *registerRequest) bind(c echo.Context, a *model.Account) error {
 	if err := c.Validate(r); err != nil {
 		return err
 	}
-	a.EmailAddress = r.Account.EmailAddress
-	h, err := a.HashPassword(r.Account.Password)
+	a.EmailAddress = r.EmailAddress
+	h, err := a.HashPassword(r.Password)
 	if err != nil {
 		return err
 	}
@@ -31,10 +29,8 @@ func (r *registerRequest) bind(c echo.Context, a *model.Account) error {
 }
 
 type loginRequest struct {
-	Account struct {
-		EmailAddress string `json:"email_address" validate:"required,email"`
-		Password     string `json:"password" validate:"required"`
-	} `json:"account"`
+	EmailAddress string `json:"email_address" validate:"required,email"`
+	Password     string `json:"password" validate:"required"`
 }
 
 func (r *loginRequest) bind(c echo.Context) error {
@@ -48,15 +44,13 @@ func (r *loginRequest) bind(c echo.Context) error {
 }
 
 type accountResponse struct {
-	User struct {
-		EmailAddress string `json:"email_address"`
-		Token        string `json:"token"`
-	} `json:"account"`
+	EmailAddress string `json:"email_address"`
+	Token        string `json:"token"`
 }
 
 func newAccountResponse(a *model.Account) *accountResponse {
 	r := new(accountResponse)
-	r.User.EmailAddress = a.EmailAddress
-	r.User.Token = platform.GenerateJWTToken(a.ID)
+	r.EmailAddress = a.EmailAddress
+	r.Token = platform.GenerateJWTToken(a.ID)
 	return r
 }

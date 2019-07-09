@@ -14,6 +14,16 @@ func (h *Handler) SignUp(c echo.Context) error {
 	if err := req.bind(c, &a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewError(err))
 	}
+
+	//check if an existing account has taken the same email address
+	ea, err := h.accountStore.GetByEmail(req.EmailAddress)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, platform.NewError(err))
+	}
+	if ea != nil {
+		return c.JSON(http.StatusOK, platform.AlreadyRegistered())
+	}
+
 	if err := h.accountStore.Create(&a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewError(err))
 	}
@@ -25,14 +35,14 @@ func (h *Handler) Login(c echo.Context) error {
 	if err := req.bind(c); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewError(err))
 	}
-	a, err := h.accountStore.GetByEmail(req.Account.EmailAddress)
+	a, err := h.accountStore.GetByEmail(req.EmailAddress)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, platform.NewError(err))
 	}
 	if a == nil {
 		return c.JSON(http.StatusForbidden, platform.AccessForbidden())
 	}
-	if !a.CheckPassword(req.Account.Password) {
+	if !a.CheckPassword(req.Password) {
 		return c.JSON(http.StatusForbidden, platform.AccessForbidden())
 	}
 	return c.JSON(http.StatusOK, newAccountResponse(a))
