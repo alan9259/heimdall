@@ -1,4 +1,4 @@
-package auth
+package platform
 
 import (
 	"fmt"
@@ -10,6 +10,30 @@ import (
 )
 
 func SendEmail(Sender string, SenderEmail string, Subject string, Receiver string, ReceiverEmail string, EmailContent string) {
+	if len(Sender) == 0 {
+		fmt.Fprintf(os.Stderr, "You must specify a sender name")
+	}
+
+	if len(SenderEmail) == 0 {
+		fmt.Fprintf(os.Stderr, "You must specify a valid sender email address")
+	}
+
+	if len(Subject) == 0 {
+		fmt.Fprintf(os.Stderr, "You must specify a subject for this email")
+	}
+
+	if len(Receiver) == 0 {
+		fmt.Fprintf(os.Stderr, "You must specify a receiver name")
+	}
+
+	if len(ReceiverEmail) == 0 {
+		fmt.Fprintf(os.Stderr, "You must specify a valid receiver email address")
+	}
+
+	if len(EmailContent) == 0 {
+		fmt.Fprintf(os.Stderr, "You must specify a content for this email")
+	}
+
 	from := mail.NewEmail(Sender, SenderEmail)
 	subject := Subject
 	to := mail.NewEmail(Receiver, ReceiverEmail)
