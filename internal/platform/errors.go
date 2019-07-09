@@ -36,20 +36,21 @@ func NewValidatorError(err error) Error {
 func AccessForbidden() Error {
 	e := Error{}
 	e.Errors = make(map[string]interface{})
-	e.Errors["body"] = "Access forbidden"
+	e.Errors["body"] = "Access forbidden."
 	return e
 }
 
 func NotFound() Error {
 	e := Error{}
 	e.Errors = make(map[string]interface{})
-	e.Errors["body"] = "Resource not found"
+	e.Errors["body"] = "Resource not found."
 	return e
 }
 
 func AlreadyRegistered() Error {
 	e := Error{}
 	e.Errors = make(map[string]interface{})
-	e.Errors["body"] = "The email address has already registered"
+	e.Errors["code"] = "4001"
+	e.Errors["body"] = "The email address is taken."
 	return e
 }
