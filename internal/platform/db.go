@@ -57,7 +57,11 @@ func AutoMigrate(db *gorm.DB) {
 	}
 
 	db.AutoMigrate(
-		&model.Account{},
+
+		&model.Gender{},
+		&model.Device{},
 		&model.Location{},
+		&model.Account{},
+		&model.Config{},
 	)
 }

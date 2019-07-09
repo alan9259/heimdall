@@ -2,17 +2,30 @@ package model
 
 import (
 	"errors"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Account struct {
-	ID           uint      `json:"id,omitempty"`
-	EmailAddress string    `json:"email_address,omitempty"`
-	Password     string    `json:"password,omitempty"`
-	FirstName    string    `json:"first_name,omitempty"`
-	LastName     string    `json:"last_name,omitempty"`
-	Location     *Location `json:"location,omitempty"`
+	ID           int32     `gorm:"AUTO_INCREMENT;not null" json:"id,omitempty"`
+	EmailAddress string    `gorm:"type:varchar(50);unique_index:idx_account_email;not null" json:"email_address,omitempty"`
+	FirstName    string    `gorm:"type:varchar(100);not null" json:"first_name,omitempty"`
+	LastName     string    `gorm:"type:varchar(100);" json:"last_name,omitempty"`
+	Password     string    `gorm:"type:varchar(100);" json:"password,omitempty"`
+	PhoneNumber  string    `gorm:"type:varchar(100);not null" json:"firstphone_number_name,omitempty"`
+	DateOfBirth  time.Time `json:"date_of_birth,omitempty"`
+
+	Gender   Gender
+	GenderID int32
+
+	CreatedAt  time.Time
+	VerifiedAt time.Time
+	LastLogin  time.Time
+
+	Devices []Device `json:"device_list,omitempty"`
+
+	Locations []Location `gorm:"many2many:account_devices;" json:"location_list,omitempty"`
 }
 
 func (a *Account) HashPassword(plain string) (string, error) {
