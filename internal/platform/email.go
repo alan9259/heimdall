@@ -1,4 +1,4 @@
-package email
+package platform
 
 import (
 	"fmt"
