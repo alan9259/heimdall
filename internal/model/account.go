@@ -13,7 +13,7 @@ type Account struct {
 	FirstName    string    `gorm:"type:varchar(100);not null" json:"first_name,omitempty"`
 	LastName     string    `gorm:"type:varchar(100);" json:"last_name,omitempty"`
 	Password     string    `gorm:"type:varchar(100);" json:"password,omitempty"`
-	PhoneNumber  string    `gorm:"type:varchar(100);not null" json:"firstphone_number_name,omitempty"`
+	PhoneNumber  string    `gorm:"type:varchar(100);not null" json:"phone_number,omitempty"`
 	DateOfBirth  time.Time `json:"date_of_birth,omitempty"`
 
 	Gender   Gender
