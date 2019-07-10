@@ -54,3 +54,30 @@ func newAccountResponse(a *model.Account) *accountResponse {
 	r.Token = platform.GenerateJWTToken(a.ID)
 	return r
 }
+
+type resetRequest struct {
+	Token        string `json:"token" validate:"required"`
+	EmailAddress string `json:"email_address" validate:"required,email"`
+	OldPassword  string `json:"old_password" validate:"required"`
+	NewPassword  string `json:"new_password" validate:"required"`
+}
+
+func (r *resetRequest) bind(c echo.Context) error {
+	if err := c.Bind(r); err != nil {
+		return err
+	}
+	if err := c.Validate(r); err != nil {
+		return err
+	}
+	return nil
+}
+
+type resetResponse struct {
+	Status  string `json: status`
+	Message string `json: message`
+	Token   string `json: "token"`
+}
+
+func passwordResetResponse(r *resetRequest) *resetResponse {
+	return nil
+}
