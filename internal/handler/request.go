@@ -81,3 +81,17 @@ func (r *accountUpdateRequest) bind(c echo.Context, a *model.Account) error {
 
 	return nil
 }
+
+type verifyEmailRequest struct {
+	Token string `json:"token" validate:"required"`
+}
+
+func (r *verifyEmailRequest) bind(c echo.Context) error {
+	if err := c.Bind(r); err != nil {
+		return err
+	}
+	if err := c.Validate(r); err != nil {
+		return err
+	}
+	return nil
+}
