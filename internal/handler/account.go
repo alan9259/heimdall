@@ -92,7 +92,7 @@ func getAccountIDFromToken(c echo.Context) uint {
 }
 
 func (h *Handler) Verify(c echo.Context) error {
-	req := &verifyEmailRequest{}
+	//req := &verifyEmailRequest{}
 	return c.JSON(http.StatusOK, newGenericResponse("Success"))
 }
 
