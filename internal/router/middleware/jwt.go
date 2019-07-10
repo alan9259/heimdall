@@ -53,8 +53,8 @@ func JWTWithConfig(config JWTConfig) echo.MiddlewareFunc {
 				return c.JSON(http.StatusForbidden, platform.NewError(ErrJWTInvalid))
 			}
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-				userID := uint(claims["id"].(float64))
-				c.Set("user", userID)
+				accountID := uint(claims["id"].(float64))
+				c.Set("account", accountID)
 				return next(c)
 			}
 			return c.JSON(http.StatusForbidden, platform.NewError(ErrJWTInvalid))
