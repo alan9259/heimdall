@@ -73,11 +73,11 @@ func (r *accountUpdateRequest) bind(c echo.Context, a *model.Account) error {
 		return err
 	}
 
-	r.FirstName = a.FirstName
-	r.LastName = a.LastName
-	r.PhoneNumber = a.PhoneNumber
-	r.DateOfBirth = a.DateOfBirth
-	r.GenderID = a.GenderID
+	a.FirstName = r.FirstName
+	a.LastName = r.LastName
+	a.PhoneNumber = r.PhoneNumber
+	a.DateOfBirth = r.DateOfBirth
+	a.GenderID = r.GenderID
 
 	return nil
 }
