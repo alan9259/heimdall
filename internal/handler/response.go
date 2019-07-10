@@ -16,3 +16,13 @@ func newAccountResponse(a *model.Account) *accountResponse {
 	r.Token = platform.GenerateJWTToken(a.ID)
 	return r
 }
+
+type genericResponse struct {
+	Message string `json:"message"`
+}
+
+func newGenericResponse(message string) *genericResponse {
+	r := new(genericResponse)
+	r.Message = message
+	return r
+}

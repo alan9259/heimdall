@@ -91,6 +91,11 @@ func getAccountIDFromToken(c echo.Context) uint {
 	return id
 }
 
+func (h *Handler) Verify(c echo.Context) error {
+	req := &verifyEmailRequest{}
+	return c.JSON(http.StatusOK, newGenericResponse("Success"))
+}
+
 func sendVerifyEmail(a *model.Account) {
 	sender := "MIU"
 	senderEmail := "alan9259@gmail.com"
