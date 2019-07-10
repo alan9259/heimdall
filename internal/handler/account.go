@@ -70,7 +70,7 @@ func (h *Handler) UpdateAccount(c echo.Context) error {
 	if a == nil {
 		return c.JSON(http.StatusNotFound, platform.NotFound())
 	}
-	req := newUserUpdateRequest()
+	req := newAccountUpdateRequest()
 	req.populate(a)
 	if err := req.bind(c, a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewError(err))

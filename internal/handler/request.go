@@ -2,7 +2,7 @@ package handler
 
 import (
 	"miu-auth-api-v1/internal/model"
-	"miu-auth-api-v1/internal/platform"
+	"time"
 
 	"github.com/labstack/echo"
 )
@@ -45,14 +45,39 @@ func (r *loginRequest) bind(c echo.Context) error {
 	return nil
 }
 
-type accountResponse struct {
-	EmailAddress string `json:"email_address"`
-	Token        string `json:"token"`
+type accountUpdateRequest struct {
+	FirstName   string    `json:"first_name"`
+	LastName    string    `json:"last_name"`
+	PhoneNumber string    `json:"phone_number"`
+	DateOfBirth time.Time `json:"date_of_birth"`
+	GenderID    int32     `json:"gender_id"`
 }
 
-func newAccountResponse(a *model.Account) *accountResponse {
-	r := new(accountResponse)
-	r.EmailAddress = a.EmailAddress
-	r.Token = platform.GenerateJWTToken(a.ID)
-	return r
+func newAccountUpdateRequest() *accountUpdateRequest {
+	return new(accountUpdateRequest)
+}
+
+func (r *accountUpdateRequest) populate(a *model.Account) {
+	r.FirstName = a.FirstName
+	r.LastName = a.LastName
+	r.PhoneNumber = a.PhoneNumber
+	r.DateOfBirth = a.DateOfBirth
+	r.GenderID = a.GenderID
+}
+
+func (r *accountUpdateRequest) bind(c echo.Context, a *model.Account) error {
+	if err := c.Bind(r); err != nil {
+		return err
+	}
+	if err := c.Validate(r); err != nil {
+		return err
+	}
+
+	r.FirstName = a.FirstName
+	r.LastName = a.LastName
+	r.PhoneNumber = a.PhoneNumber
+	r.DateOfBirth = a.DateOfBirth
+	r.GenderID = a.GenderID
+
+	return nil
 }
