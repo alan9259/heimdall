@@ -8,6 +8,7 @@ import (
 )
 
 type registerRequest struct {
+	FirstName    string `json:"first_name" validate:"required"`
 	EmailAddress string `json:"email_address" validate:"required,email"`
 	Password     string `json:"password" validate:"required"`
 }
@@ -20,6 +21,7 @@ func (r *registerRequest) bind(c echo.Context, a *model.Account) error {
 		return err
 	}
 	a.EmailAddress = r.EmailAddress
+	a.FirstName = r.FirstName
 	h, err := a.HashPassword(r.Password)
 	if err != nil {
 		return err

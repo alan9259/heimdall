@@ -27,6 +27,9 @@ func (h *Handler) SignUp(c echo.Context) error {
 	if err := h.accountStore.Create(&a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewError(err))
 	}
+
+	sendVerifyEmail(&a)
+
 	return c.JSON(http.StatusCreated, newAccountResponse(&a))
 }
 
@@ -46,4 +49,21 @@ func (h *Handler) Login(c echo.Context) error {
 		return c.JSON(http.StatusForbidden, platform.AccessForbidden())
 	}
 	return c.JSON(http.StatusOK, newAccountResponse(a))
+}
+
+func sendVerifyEmail(a *model.Account) {
+	sender := "MIU"
+	senderEmail := "alan9259@gmail.com"
+	subject := "Thank you for signing up"
+	url := "http://miu.com"
+	content := "Hi " + a.FirstName + ", <br><br>" + "Thank you for signing up, " +
+		"please verify your email address by clicking " + url + "<br><br>" + "MIU"
+
+	platform.SendEmail(
+		sender,
+		senderEmail,
+		subject,
+		a.FirstName,
+		a.EmailAddress,
+		content)
 }
