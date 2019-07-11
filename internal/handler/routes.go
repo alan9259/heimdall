@@ -12,15 +12,11 @@ func (h *Handler) Register(v1 *echo.Group) {
 	guestUsers := v1.Group("/accounts")
 	guestUsers.POST("", h.SignUp)
 	guestUsers.POST("/login", h.Login)
+	guestUsers.POST("/verify", h.Verify)
 
-	account := v1.Group("/account", jwtMiddleware)
-	account.GET("", h.Login)
-	//account.PUT("", h.UpdateUser)
-
-	//profiles := v1.Group("/profiles", jwtMiddleware)
-	//profiles.GET("/:username", h.GetProfile)
-	//profiles.POST("/:username/follow", h.Follow)
-	//profiles.DELETE("/:username/follow", h.Unfollow)
+	profiles := v1.Group("/profiles", jwtMiddleware)
+	profiles.GET("/current", h.GetCurrentAccount)
+	profiles.PUT("", h.UpdateAccount)
 
 	locations := v1.Group("/locations", middleware.JWTWithConfig(
 		middleware.JWTConfig{

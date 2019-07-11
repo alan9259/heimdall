@@ -31,7 +31,7 @@ func JWT(key interface{}) echo.MiddlewareFunc {
 }
 
 func JWTWithConfig(config JWTConfig) echo.MiddlewareFunc {
-	extractor := jwtFromHeader("Authorization", "Token")
+	extractor := jwtFromHeader("Authorization", "Bearer")
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			auth, err := extractor(c)
@@ -53,8 +53,8 @@ func JWTWithConfig(config JWTConfig) echo.MiddlewareFunc {
 				return c.JSON(http.StatusForbidden, platform.NewError(ErrJWTInvalid))
 			}
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-				userID := uint(claims["id"].(float64))
-				c.Set("user", userID)
+				accountID := uint(claims["id"].(float64))
+				c.Set("account", accountID)
 				return next(c)
 			}
 			return c.JSON(http.StatusForbidden, platform.NewError(ErrJWTInvalid))

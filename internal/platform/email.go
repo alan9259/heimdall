@@ -40,7 +40,8 @@ func SendEmail(Sender string, SenderEmail string, Subject string, Receiver strin
 	plainTextContent := EmailContent
 	htmlContent := "<strong>" + EmailContent + "</strong>"
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
-	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY")) // key was passed in as env variable
+	key := ""
+	client := sendgrid.NewSendClient(key) // key was passed in as env variable
 
 	response, err := client.Send(message)
 	if err != nil {
