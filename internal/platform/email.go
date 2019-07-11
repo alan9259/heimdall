@@ -1,6 +1,7 @@
 package platform
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -9,9 +10,17 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func SendEmail(Sender string, SenderEmail string, Subject string, Receiver string, ReceiverEmail string, EmailContent string, key string) {
+func SendEmail(
+	Sender string,
+	SenderEmail string,
+	Subject string,
+	Receiver string,
+	ReceiverEmail string,
+	EmailContent string,
+	key string) error {
 	if len(Sender) == 0 {
 		fmt.Fprintf(os.Stderr, "You must specify a sender name")
+		return errors.New("You must specify a sender name")
 	}
 	if len(SenderEmail) == 0 {
 		fmt.Fprintf(os.Stderr, "You must specify a valid sender email address")
@@ -43,11 +52,14 @@ func SendEmail(Sender string, SenderEmail string, Subject string, Receiver strin
 	client := sendgrid.NewSendClient(key) // key was passed in as env variable
 
 	response, err := client.Send(message)
+
 	if err != nil {
 		log.Println(err)
 	} else {
-		fmt.Println(response.StatusCode)
-		fmt.Println(response.Body)
-		fmt.Println(response.Headers)
+		log.Println(response.StatusCode)
+		log.Println(response.Body)
+		log.Println(response.Headers)
 	}
+
+	return nil
 }

@@ -7,50 +7,50 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-type Error struct {
-	Errors map[string]interface{} `json:"errors"`
+type HttpError struct {
+	HttpErrors map[string]interface{} `json:"errors"`
 }
 
-func NewError(err error) Error {
-	e := Error{}
-	e.Errors = make(map[string]interface{})
+func NewHttpError(err error) HttpError {
+	e := HttpError{}
+	e.HttpErrors = make(map[string]interface{})
 	switch v := err.(type) {
 	case *echo.HTTPError:
-		e.Errors["body"] = v.Message
+		e.HttpErrors["body"] = v.Message
 	default:
-		e.Errors["body"] = v.Error()
+		e.HttpErrors["body"] = v.Error()
 	}
 	return e
 }
 
-func NewValidatorError(err error) Error {
-	e := Error{}
-	e.Errors = make(map[string]interface{})
+func NewValidatorError(err error) HttpError {
+	e := HttpError{}
+	e.HttpErrors = make(map[string]interface{})
 	errs := err.(validator.ValidationErrors)
 	for _, v := range errs {
-		e.Errors[v.Field()] = fmt.Sprintf("%v", v.Tag())
+		e.HttpErrors[v.Field()] = fmt.Sprintf("%v", v.Tag())
 	}
 	return e
 }
 
-func AccessForbidden() Error {
-	e := Error{}
-	e.Errors = make(map[string]interface{})
-	e.Errors["body"] = "Access forbidden."
+func AccessForbidden() HttpError {
+	e := HttpError{}
+	e.HttpErrors = make(map[string]interface{})
+	e.HttpErrors["body"] = "Access forbidden."
 	return e
 }
 
-func NotFound() Error {
-	e := Error{}
-	e.Errors = make(map[string]interface{})
-	e.Errors["body"] = "Resource not found."
+func NotFound() HttpError {
+	e := HttpError{}
+	e.HttpErrors = make(map[string]interface{})
+	e.HttpErrors["body"] = "Resource not found."
 	return e
 }
 
-func AlreadyRegistered() Error {
-	e := Error{}
-	e.Errors = make(map[string]interface{})
-	e.Errors["code"] = "4001"
-	e.Errors["body"] = "The email address is taken."
+func AlreadyRegistered() HttpError {
+	e := HttpError{}
+	e.HttpErrors = make(map[string]interface{})
+	e.HttpErrors["code"] = "4001"
+	e.HttpErrors["body"] = "The email address is taken."
 	return e
 }

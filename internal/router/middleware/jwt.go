@@ -41,7 +41,7 @@ func JWTWithConfig(config JWTConfig) echo.MiddlewareFunc {
 						return next(c)
 					}
 				}
-				return c.JSON(http.StatusUnauthorized, platform.NewError(err))
+				return c.JSON(http.StatusUnauthorized, platform.NewHttpError(err))
 			}
 			token, err := jwt.Parse(auth, func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -50,14 +50,14 @@ func JWTWithConfig(config JWTConfig) echo.MiddlewareFunc {
 				return config.SigningKey, nil
 			})
 			if err != nil {
-				return c.JSON(http.StatusForbidden, platform.NewError(ErrJWTInvalid))
+				return c.JSON(http.StatusForbidden, platform.NewHttpError(ErrJWTInvalid))
 			}
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 				accountID := uint(claims["id"].(float64))
 				c.Set("account", accountID)
 				return next(c)
 			}
-			return c.JSON(http.StatusForbidden, platform.NewError(ErrJWTInvalid))
+			return c.JSON(http.StatusForbidden, platform.NewHttpError(ErrJWTInvalid))
 		}
 	}
 }

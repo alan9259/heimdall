@@ -8,7 +8,7 @@ import (
 func (h *Handler) sendVerifyEmail(a *model.Account) error {
 	key, err := h.configStore.GetApiKey("sendgridApikey")
 	if err != nil {
-
+		return err
 	}
 	sender := "MIU"
 	senderEmail := "alan9259@gmail.com"
@@ -17,7 +17,7 @@ func (h *Handler) sendVerifyEmail(a *model.Account) error {
 	content := "Hi " + a.FirstName + ", <br><br>" + "Thank you for signing up, " +
 		"please verify your email address by clicking " + url + "<br><br>" + "MIU"
 
-	platform.SendEmail(
+	err = platform.SendEmail(
 		sender,
 		senderEmail,
 		subject,
@@ -25,4 +25,10 @@ func (h *Handler) sendVerifyEmail(a *model.Account) error {
 		a.EmailAddress,
 		content,
 		key.Value)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
