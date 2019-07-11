@@ -9,11 +9,10 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func SendEmail(Sender string, SenderEmail string, Subject string, Receiver string, ReceiverEmail string, EmailContent string) {
+func SendEmail(Sender string, SenderEmail string, Subject string, Receiver string, ReceiverEmail string, EmailContent string, key string) {
 	if len(Sender) == 0 {
 		fmt.Fprintf(os.Stderr, "You must specify a sender name")
 	}
-
 	if len(SenderEmail) == 0 {
 		fmt.Fprintf(os.Stderr, "You must specify a valid sender email address")
 	}
@@ -40,7 +39,7 @@ func SendEmail(Sender string, SenderEmail string, Subject string, Receiver strin
 	plainTextContent := EmailContent
 	htmlContent := "<strong>" + EmailContent + "</strong>"
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
-	key := ""
+
 	client := sendgrid.NewSendClient(key) // key was passed in as env variable
 
 	response, err := client.Send(message)
