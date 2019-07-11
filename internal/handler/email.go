@@ -6,7 +6,7 @@ import (
 )
 
 func (h *Handler) sendVerifyEmail(a *model.Account) error {
-	key, err := h.configStore.GetApiKey("sendgrid API key")
+	key, err := h.configStore.GetApiKey("sendgridApikey")
 	if err != nil {
 
 	}
