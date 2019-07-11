@@ -28,7 +28,7 @@ func (h *Handler) SignUp(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewError(err))
 	}
 
-	sendVerifyEmail(&a)
+	h.sendVerifyEmail(&a)
 
 	return c.JSON(http.StatusCreated, newAccountResponse(&a))
 }
@@ -94,21 +94,4 @@ func getAccountIDFromToken(c echo.Context) uint {
 func (h *Handler) Verify(c echo.Context) error {
 	//req := &verifyEmailRequest{}
 	return c.JSON(http.StatusOK, newGenericResponse("Success"))
-}
-
-func sendVerifyEmail(a *model.Account) {
-	sender := "MIU"
-	senderEmail := "alan9259@gmail.com"
-	subject := "Thank you for signing up"
-	url := "http://miu.com"
-	content := "Hi " + a.FirstName + ", <br><br>" + "Thank you for signing up, " +
-		"please verify your email address by clicking " + url + "<br><br>" + "MIU"
-
-	platform.SendEmail(
-		sender,
-		senderEmail,
-		subject,
-		a.FirstName,
-		a.EmailAddress,
-		content)
 }
