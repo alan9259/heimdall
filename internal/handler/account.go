@@ -54,7 +54,7 @@ func (h *Handler) Login(c echo.Context) error {
 		return c.JSON(http.StatusForbidden, platform.AccessForbidden())
 	}
 
-	a.LastLogin = time.Now().UTC()
+	a.LastLoginAt = time.Now().UTC()
 
 	if err := h.accountStore.Update(a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
@@ -112,7 +112,7 @@ func (h *Handler) UpdateAccount(c echo.Context) error {
 	if err := req.bind(c, a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
-	a.LastModified = time.Now().UTC()
+	a.LastModifiedAt = time.Now().UTC()
 	if err := h.accountStore.Update(a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
