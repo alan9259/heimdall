@@ -79,6 +79,7 @@ func (h *Handler) Reset(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, platform.NewError(err))
 	}
 	return c.JSON(http.StatusOK, passwordResetResponse(a))
+}
 func (h *Handler) GetCurrentAccount(c echo.Context) error {
 	a, err := h.accountStore.GetByID(getAccountIDFromToken(c))
 	if err != nil {
