@@ -9,50 +9,50 @@ import (
 )
 
 func SendEmail(
-	Sender string,
-	SenderEmail string,
-	Subject string,
-	Receiver string,
-	ReceiverEmail string,
-	EmailContent string,
+	sender string,
+	senderEmail string,
+	subject string,
+	receiver string,
+	receiverEmail string,
+	emailContent string,
 	key string) error {
 
-	if len(Sender) == 0 {
+	if len(sender) == 0 {
 		log.Println("You must specify a sender name")
 		return errors.New("You must specify a sender name")
 	}
 
-	if len(SenderEmail) == 0 {
+	if len(senderEmail) == 0 {
 		log.Println("You must specify a valid sender email address")
 		return errors.New("You must specify a valid sender email address")
 	}
 
-	if len(Subject) == 0 {
+	if len(subject) == 0 {
 		log.Println("You must specify a subject for this email")
 		return errors.New("You must specify a subject for this email")
 	}
 
-	if len(Receiver) == 0 {
+	if len(receiver) == 0 {
 		log.Println("You must specify a receiver name")
 		return errors.New("You must specify a receiver name")
 	}
 
-	if len(ReceiverEmail) == 0 {
+	if len(receiverEmail) == 0 {
 		log.Println("You must specify a valid receiver email address")
 		return errors.New("You must specify a valid receiver email address")
 	}
 
-	if len(EmailContent) == 0 {
+	if len(emailContent) == 0 {
 		log.Println("You must specify a content for this email")
 		return errors.New("You must specify a content for this email")
 	}
 
-	from := mail.NewEmail(Sender, SenderEmail)
-	subject := Subject
-	to := mail.NewEmail(Receiver, ReceiverEmail)
-	plainTextContent := EmailContent
-	htmlContent := "<strong>" + EmailContent + "</strong>"
-	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
+	from := mail.NewEmail(sender, senderEmail)
+	emailTitle := subject
+	to := mail.NewEmail(receiver, receiverEmail)
+	plainTextContent := emailContent
+	htmlContent := "<strong>" + emailContent + "</strong>"
+	message := mail.NewSingleEmail(from, emailTitle, to, plainTextContent, htmlContent)
 
 	client := sendgrid.NewSendClient(key) // key was passed in as env variable
 

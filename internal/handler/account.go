@@ -63,8 +63,8 @@ func (h *Handler) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, newAccountResponse(a))
 }
 
-func (h *Handler) Reset(c echo.Context) error {
-	req := &resetRequest{}
+func (h *Handler) Change(c echo.Context) error {
+	req := &changeRequest{}
 	if err := req.bind(c); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
@@ -86,7 +86,7 @@ func (h *Handler) Reset(c echo.Context) error {
 	if err := h.accountStore.Update(a); err != nil {
 		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
 	}
-	return c.JSON(http.StatusOK, passwordResetResponse(a))
+	return c.JSON(http.StatusOK, passwordChangeResponse(a))
 }
 func (h *Handler) GetCurrentAccount(c echo.Context) error {
 	a, err := h.accountStore.GetByID(getAccountIDFromToken(c))
