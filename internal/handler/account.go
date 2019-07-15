@@ -58,14 +58,14 @@ func (h *Handler) Login(c echo.Context) error {
 func (h *Handler) Reset(c echo.Context) error {
 	req := &resetRequest{}
 	if err := req.bind(c); err != nil {
-		return c.JSON(http.StatusUnprocessableEntity, platform.NewError(err))
+		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
 	a, err := h.accountStore.GetByEmail(req.EmailAddress)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, platform.NewError(err))
+		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
 	}
 	if a == nil {
-		return c.JSON(http.StatusNotFound, platform.NewError(err))
+		return c.JSON(http.StatusNotFound, platform.NewHttpError(err))
 	}
 	if !a.CheckPassword(req.OldPassword) {
 		return c.JSON(http.StatusForbidden, platform.AccessForbidden())
@@ -75,8 +75,8 @@ func (h *Handler) Reset(c echo.Context) error {
 		return err
 	}
 	a.Password = hash
-	if err := h.accountStore.UpdateAccountDetails(a); err != nil {
-		return c.JSON(http.StatusInternalServerError, platform.NewError(err))
+	if err := h.accountStore.Update(a); err != nil {
+		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
 	}
 	return c.JSON(http.StatusOK, passwordResetResponse(a))
 }

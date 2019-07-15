@@ -45,14 +45,3 @@ func (as *AccountStore) GetByEmail(e string) (*model.Account, error) {
 	}
 	return &m, nil
 }
-
-func (as *AccountStore) UpdateAccountDetails(a *model.Account) error {
-	//var m model.Account
-	if err := as.db.Save(a).Error; err != nil {
-		if gorm.IsRecordNotFoundError(err) {
-			return nil
-		}
-		return err
-	}
-	return nil
-}

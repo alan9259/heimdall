@@ -26,3 +26,15 @@ func newGenericResponse(message string) *genericResponse {
 	r.Message = message
 	return r
 }
+
+type resetResponse struct {
+	Message string `json: message`
+	Token   string `json: "token"`
+}
+
+func passwordResetResponse(a *model.Account) *resetResponse {
+	resp := new(resetResponse)
+	resp.Token = platform.GenerateJWTToken(a.ID)
+	resp.Message = `Your password been updated successfully.`
+	return resp
+}
