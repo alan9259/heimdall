@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+
 	r := router.New()
 	v1 := r.Group("/api")
 
@@ -16,7 +17,9 @@ func main() {
 
 	as := store.NewAccountStore(d)
 	ls := store.NewLocationStore(d)
-	h := handler.NewHandler(as, ls)
+	cs := store.NewConfigStore(d)
+
+	h := handler.NewHandler(as, ls, cs)
 
 	h.Register(v1)
 	r.Logger.Fatal(r.Start("127.0.0.1:8585"))

@@ -5,7 +5,8 @@ import (
 )
 
 type Store interface {
-	GetByEmail(string) (*model.Account, error)
 	Create(*model.Account) error
-	UpdateAccountDetails(*model.Account) error
+	Update(*model.Account) error
+	GetByID(uint) (*model.Account, error)
+	GetByEmail(string) (*model.Account, error)
 }
