@@ -69,6 +69,7 @@ func (r *resetRequest) bind(c echo.Context) error {
 	if err := c.Validate(r); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -78,6 +79,10 @@ type resetResponse struct {
 	Token   string `json: "token"`
 }
 
-func passwordResetResponse(r *resetRequest) *resetResponse {
-	return nil
+func passwordResetResponse(a *model.Account) *resetResponse {
+	resp := new(resetResponse)
+	resp.Token = platform.GenerateJWTToken(a.ID)
+	resp.Status = `200`
+	resp.Message = `Password updated successfully.`
+	return resp
 }

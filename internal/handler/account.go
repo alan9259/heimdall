@@ -71,6 +71,5 @@ func (h *Handler) Reset(c echo.Context) error {
 	if err := h.accountStore.UpdateAccountDetails(a); err != nil {
 		return c.JSON(http.StatusInternalServerError, platform.NewError(err))
 	}
-	return nil
-	//return c.JSON(http.StatusOK, resetResponse(a))
+	return c.JSON(http.StatusOK, passwordResetResponse(a))
 }
