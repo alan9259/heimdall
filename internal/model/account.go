@@ -19,9 +19,10 @@ type Account struct {
 	Gender   Gender
 	GenderID int32
 
-	CreatedAt  time.Time
-	VerifiedAt time.Time
-	LastLogin  time.Time
+	CreatedAt    time.Time
+	VerifiedAt   time.Time
+	LastLogin    time.Time
+	LastModified time.Time
 
 	Devices []Device `json:"device_list,omitempty"`
 

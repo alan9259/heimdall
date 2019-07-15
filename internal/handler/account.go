@@ -4,6 +4,7 @@ import (
 	model "miu-auth-api-v1/internal/model"
 	platform "miu-auth-api-v1/internal/platform"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo"
 )
@@ -52,6 +53,13 @@ func (h *Handler) Login(c echo.Context) error {
 	if !a.CheckPassword(req.Password) {
 		return c.JSON(http.StatusForbidden, platform.AccessForbidden())
 	}
+
+	a.LastLogin = time.Now().UTC()
+
+	if err := h.accountStore.Update(a); err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
+	}
+
 	return c.JSON(http.StatusOK, newAccountResponse(a))
 }
 
@@ -79,6 +87,7 @@ func (h *Handler) UpdateAccount(c echo.Context) error {
 	if err := req.bind(c, a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
+	a.LastModified = time.Now().UTC()
 	if err := h.accountStore.Update(a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
