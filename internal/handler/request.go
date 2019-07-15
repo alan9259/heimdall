@@ -113,3 +113,18 @@ func (r *changeRequest) bind(c echo.Context) error {
 
 	return nil
 }
+
+type revokeTokenRequest struct {
+	Token string `json:"token" validate:"required"`
+}
+
+func (r *revokeTokenRequest) bind(c echo.Context) error {
+	if err := c.Bind(r); err != nil {
+		return err
+	}
+	if err := c.Validate(r); err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -26,7 +26,8 @@ type Account struct {
 
 	Devices []Device `json:"device_list,omitempty"`
 
-	Locations []Location `gorm:"many2many:account_devices;" json:"location_list,omitempty"`
+	Locations     []Location `gorm:"many2many:account_devices;" json:"location_list,omitempty"`
+	RevokedTokens []RevokedToken
 }
 
 func (a *Account) HashPassword(plain string) (string, error) {
