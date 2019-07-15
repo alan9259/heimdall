@@ -1,15 +1,19 @@
 package handler
 
 import (
+	"log"
 	model "miu-auth-api-v1/internal/model"
 	platform "miu-auth-api-v1/internal/platform"
 )
 
 func (h *Handler) sendVerifyEmail(a *model.Account) error {
 	key, err := h.configStore.GetApiKey("sendgridApikey")
+
 	if err != nil {
+		log.Println("Error: Failed to fetch sendgrid api key from database")
 		return err
 	}
+
 	sender := "MIU"
 	senderEmail := "alan9259@gmail.com"
 	subject := "Thank you for signing up"
@@ -27,6 +31,7 @@ func (h *Handler) sendVerifyEmail(a *model.Account) error {
 		key.Value)
 
 	if err != nil {
+		log.Println("Error: " + err.Error())
 		return err
 	}
 
