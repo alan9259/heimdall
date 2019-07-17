@@ -12,6 +12,7 @@ func (h *Handler) Register(v1 *echo.Group) {
 	guestUsers := v1.Group("/accounts")
 	guestUsers.POST("", h.SignUp)
 	guestUsers.POST("/login", h.Login)
+	guestUsers.POST("/logout", h.Logout, jwtMiddleware)
 	guestUsers.POST("/change", h.Change)
 	guestUsers.POST("/verify", h.Verify)
 
