@@ -18,9 +18,10 @@ func main() {
 	as := store.NewAccountStore(d)
 	ls := store.NewLocationStore(d)
 	cs := store.NewConfigStore(d)
+	ps := store.NewPinStore(d)
 	rts := store.NewRevokedTokenStore(d)
 
-	h := handler.NewHandler(as, ls, cs, rts)
+	h := handler.NewHandler(as, ls, cs, ps, rts)
 
 	h.Register(v1)
 	r.Logger.Fatal(r.Start("127.0.0.1:8585"))

@@ -63,5 +63,6 @@ func AutoMigrate(db *gorm.DB) {
 		&model.Location{},
 		&model.Account{},
 		&model.Config{},
+		&model.Pin{},
 	)
 }

@@ -3,12 +3,8 @@ package model
 import "time"
 
 type Pin struct {
-	ID        int    `gorm:"AUTO_INCREMENT;not null;primary_key" json:"id,omitempty"`
-	AccountID int    `gorm:"not null;primary_key" json:"account_id,omitempty"`
-	Pin       int    `gorm:"not null" json:"pin,omitempty"`
-	Purpose   string `json:"purpose,omitempty"`
-
-	VerifiedAt time.Time
-	ExpiredAt  time.Time
-	CreatedAt  time.Time
+	EmailAddress string `gorm:"type:varchar(50);unique_index:idx_account_email;not null;primary_key" json:"email_address,omitempty"`
+	Pin          int32  `gorm:"varchar(4);not null;primary_key" json:"pin,omitempty"`
+	Purpose      string `gorm:"varchar(15);not null" json:"purpose,omitempty"`
+	ExpiredAt    time.Time
 }

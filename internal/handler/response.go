@@ -38,3 +38,15 @@ func passwordChangeResponse(a *model.Account) *changeResponse {
 	resp.Message = `Your password been changed successfully.`
 	return resp
 }
+
+type forgotPasswordResponse struct {
+	Message string `json: message`
+	Status  string `json: code`
+}
+
+func requestForgotPasswordResponse() *forgotPasswordResponse {
+	resp := new(forgotPasswordResponse)
+	resp.Message = "We have sent you an email with a reset code for verification."
+	resp.Status = "200"
+	return resp
+}
