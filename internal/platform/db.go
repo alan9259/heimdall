@@ -63,5 +63,6 @@ func AutoMigrate(db *gorm.DB) {
 		&model.Account{},
 		&model.Config{},
 		&model.RevokedToken{},
+		&model.Pin{},
 	)
 }

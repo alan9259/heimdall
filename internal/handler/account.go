@@ -118,6 +118,7 @@ func (h *Handler) Change(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, passwordChangeResponse(a))
 }
+
 func (h *Handler) GetCurrentAccount(c echo.Context) error {
 	a, err := h.accountStore.GetByID(getAccountIDFromToken(c))
 	if err != nil {
@@ -147,6 +148,32 @@ func (h *Handler) UpdateAccount(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
 	return c.JSON(http.StatusOK, newAccountResponse(a))
+}
+
+func (h *Handler) ForgotPassword(c echo.Context) error {
+	req := &forgotPasswordRequest{}
+	var p model.Pin
+
+	if err := req.bind(c, &p); err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
+	}
+	a, err := h.accountStore.GetByEmail(req.EmailAddress)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
+	}
+	if a == nil {
+		return c.JSON(http.StatusForbidden, platform.AccessForbidden())
+	}
+	pinGen := generatePin(&p)
+	p.ExpiredAt = pinGen.expiredAt
+	p.Pin = pinGen.pin
+	p.Purpose = "forgotten"
+
+	if err := h.pinStore.Create(&p); err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, requestForgotPasswordResponse())
 }
 
 //private func
