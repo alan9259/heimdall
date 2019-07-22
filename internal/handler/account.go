@@ -142,6 +142,7 @@ func (h *Handler) ForgotPassword(c echo.Context) error {
 	if err := h.pinStore.Create(&p); err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
+	//TODO Send email
 
 	return c.JSON(http.StatusOK, requestForgotPasswordResponse())
 }
