@@ -13,6 +13,7 @@ import (
 
 func (h *Handler) SignUp(c echo.Context) error {
 	var a model.Account
+	var p model.Pin
 	req := &registerRequest{}
 	if err := req.bind(c, &a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
@@ -30,11 +31,16 @@ func (h *Handler) SignUp(c echo.Context) error {
 	if err := h.accountStore.Create(&a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
-
-	err = h.sendVerifyEmail(&a)
-
-	if err != nil {
-		return c.JSON(http.StatusCreated, platform.NewHttpError(err))
+	pinResp := generatePin(&p)
+	p.ExpiredAt = pinResp.expiredAt
+	p.Pin = pinResp.pin
+	p.EmailAddress = a.EmailAddress
+	p.Purpose = "SignUp"
+	if err = h.pinStore.Create(&p); err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	if err = h.sendVerifyEmail(&a, &p); err != nil {
+		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
 	}
 
 	return c.JSON(http.StatusCreated, newAccountResponse(&a))
@@ -173,6 +179,10 @@ func (h *Handler) ForgotPassword(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	//TODO Send email
+	emErr := h.sendVerifyEmail(a, &p)
+	if emErr != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
 
 	return c.JSON(http.StatusOK, requestForgotPasswordResponse())
 }
