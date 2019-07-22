@@ -24,7 +24,7 @@ type pinGenerateResponseModel struct {
 	expiredAt time.Time
 }
 
-func generatePin(a *model.Pin) *pinGenerateResponseModel {
+func generatePin() *pinGenerateResponseModel {
 	resp := new(pinGenerateResponseModel)
 	t := time.Now()
 	resp.pin = int32(rand.Intn(1000000))
