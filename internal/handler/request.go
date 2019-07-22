@@ -57,7 +57,7 @@ func newAccountUpdateRequest() *accountUpdateRequest {
 	return new(accountUpdateRequest)
 }
 
-func (r *accountUpdateRequest) populate(a *model.Account) {
+func (r *accountUpdateRequest) populateAccount(a *model.Account) {
 	r.FirstName = a.FirstName
 	r.LastName = a.LastName
 	r.PhoneNumber = a.PhoneNumber
@@ -114,20 +114,21 @@ func (r *changeRequest) bind(c echo.Context) error {
 	return nil
 }
 
-type revokeTokenRequest struct {
-	Token string `json:"token" validate:"required"`
-}
+// type revokeTokenRequest struct {
+// 	Token string `json:"token" validate:"required"`
+// }
 
-func (r *revokeTokenRequest) bind(c echo.Context) error {
-	if err := c.Bind(r); err != nil {
-		return err
-	}
-	if err := c.Validate(r); err != nil {
-		return err
-	}
+// func (r *revokeTokenRequest) bind(c echo.Context, rt *model.RevokedToken) error {
+// 	if err := c.Bind(r); err != nil {
+// 		return err
+// 	}
+// 	if err := c.Validate(r); err != nil {
+// 		return err
+// 	}
 
-	return nil
-}
+// 	rt.Token = r.Token
+// 	return nil
+// }
 
 type forgotPasswordRequest struct {
 	EmailAddress string `json:"email_address" validate:"required,email"`

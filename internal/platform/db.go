@@ -57,12 +57,12 @@ func AutoMigrate(db *gorm.DB) {
 	}
 
 	db.AutoMigrate(
-
 		&model.Gender{},
 		&model.Device{},
 		&model.Location{},
 		&model.Account{},
 		&model.Config{},
+		&model.RevokedToken{},
 		&model.Pin{},
 	)
 }

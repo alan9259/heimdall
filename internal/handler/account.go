@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/google/uuid"
+
 	"github.com/labstack/echo"
 )
 
@@ -63,6 +65,34 @@ func (h *Handler) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, newAccountResponse(a))
 }
 
+func (h *Handler) Logout(c echo.Context) error {
+	var rt model.RevokedToken
+	// req := &revokeTokenRequest{}
+	// if err := req.bind(c, &rt); err != nil {
+	// 	return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
+	// }
+
+	rt.AccountId = int32(getAccountIDFromToken(c))
+	rt.ExpiredAt = getExpFromToken(c)
+	rt.Jti = getJtiFromToken(c)
+	rt.Token = getToken(c)
+	rt.RevokedAt = time.Now().UTC()
+
+	ert, err := h.revokedTokenStore.GetByJti(rt.Jti)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
+	}
+	if ert != nil {
+		return c.JSON(http.StatusOK, newGenericResponse("Logout successfully!!"))
+	}
+
+	if err := h.revokedTokenStore.Create(&rt); err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
+	}
+
+	return c.JSON(http.StatusCreated, newGenericResponse("Logout successfully!"))
+}
+
 func (h *Handler) Change(c echo.Context) error {
 	req := &changeRequest{}
 	if err := req.bind(c); err != nil {
@@ -109,7 +139,7 @@ func (h *Handler) UpdateAccount(c echo.Context) error {
 		return c.JSON(http.StatusNotFound, platform.NotFound())
 	}
 	req := newAccountUpdateRequest()
-	req.populate(a)
+	req.populateAccount(a)
 	if err := req.bind(c, a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
@@ -150,11 +180,35 @@ func (h *Handler) ForgotPassword(c echo.Context) error {
 //private func
 
 func getAccountIDFromToken(c echo.Context) uint {
-	id, ok := c.Get("account").(uint)
+	id, ok := c.Get("accountId").(uint)
 	if !ok {
 		return 0
 	}
 	return id
+}
+
+func getToken(c echo.Context) string {
+	token, ok := c.Get("token").(string)
+	if !ok {
+		return ""
+	}
+	return token
+}
+
+func getExpFromToken(c echo.Context) time.Time {
+	exp, ok := c.Get("tokenExp").(time.Time)
+	if !ok {
+		return time.Time{}
+	}
+	return exp
+}
+
+func getJtiFromToken(c echo.Context) uuid.UUID {
+	jti, ok := c.Get("tokenJti").(uuid.UUID)
+	if !ok {
+		return uuid.UUID{}
+	}
+	return jti
 }
 
 func (h *Handler) Verify(c echo.Context) error {

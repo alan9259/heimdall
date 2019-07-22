@@ -2,12 +2,14 @@ package model
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type RevokedToken struct {
-	AccountId int32  `gorm:"primary_key;"`
-	Jti       string `gorm:"primary_key;type:varchar(100);"`
-	Token     string `gorm:"type:varchar(100);not null"`
+	Jti       uuid.UUID `gorm:"primary_key;unique;type:uuid"`
+	Token     string    `gorm:"type:varchar;not null"`
+	AccountId int32
 	ExpiredAt time.Time
 	RevokedAt time.Time
 }

@@ -3,10 +3,13 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"miu-auth-api-v1/internal/platform"
+	"miu-auth-api-v1/internal/store"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/google/uuid"
 	"github.com/labstack/echo"
 )
 
@@ -53,8 +56,29 @@ func JWTWithConfig(config JWTConfig) echo.MiddlewareFunc {
 				return c.JSON(http.StatusForbidden, platform.NewHttpError(ErrJWTInvalid))
 			}
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+				d := platform.New()
+				rts := store.NewRevokedTokenStore(d)
 				accountID := uint(claims["id"].(float64))
-				c.Set("account", accountID)
+				jti, err := uuid.Parse(claims["jti"].(string))
+				if err != nil {
+					c.JSON(http.StatusForbidden, platform.NewHttpError(ErrJWTInvalid))
+				}
+
+				et, err := rts.GetByJti(jti)
+
+				if et != nil {
+					return c.JSON(http.StatusForbidden, platform.NewHttpError(ErrJWTInvalid))
+				}
+
+				if err != nil {
+					return c.JSON(http.StatusForbidden, platform.NewHttpError(ErrJWTInvalid))
+				}
+
+				exp := time.Unix(int64(claims["exp"].(float64)), 0)
+				c.Set("accountId", accountID)
+				c.Set("tokenJti", jti)
+				c.Set("tokenExp", exp)
+				c.Set("token", token.Raw)
 				return next(c)
 			}
 			return c.JSON(http.StatusForbidden, platform.NewHttpError(ErrJWTInvalid))

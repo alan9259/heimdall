@@ -28,14 +28,14 @@ func newGenericResponse(message string) *genericResponse {
 }
 
 type changeResponse struct {
-	Message string `json: message`
-	Token   string `json: "token"`
+	Message string `json:"message"`
+	Token   string `json:"token"`
 }
 
 func passwordChangeResponse(a *model.Account) *changeResponse {
 	resp := new(changeResponse)
 	resp.Token = platform.GenerateJWTToken(a.ID)
-	resp.Message = `Your password been changed successfully.`
+	resp.Message = `Your password has been changed successfully.`
 	return resp
 }
 
