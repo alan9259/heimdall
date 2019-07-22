@@ -97,7 +97,6 @@ func (r *verifyEmailRequest) bind(c echo.Context) error {
 }
 
 type changeRequest struct {
-	Token        string `json:"token" validate:"required"`
 	EmailAddress string `json:"email_address" validate:"required,email"`
 	OldPassword  string `json:"old_password" validate:"required"`
 	NewPassword  string `json:"new_password" validate:"required"`
