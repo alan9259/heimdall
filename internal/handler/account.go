@@ -100,6 +100,12 @@ func (h *Handler) Logout(c echo.Context) error {
 }
 
 func (h *Handler) Change(c echo.Context) error {
+	var rt model.RevokedToken
+	rt.AccountId = int32(getAccountIDFromToken(c))
+	rt.ExpiredAt = getExpFromToken(c)
+	rt.Jti = getJtiFromToken(c)
+	rt.Token = getToken(c)
+	rt.RevokedAt = time.Now().UTC()
 	req := &changeRequest{}
 	if err := req.bind(c); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
@@ -109,7 +115,7 @@ func (h *Handler) Change(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
 	}
 	if a == nil {
-		return c.JSON(http.StatusNotFound, platform.NewHttpError(err))
+		return c.JSON(http.StatusNotFound, nil)
 	}
 	if !a.CheckPassword(req.OldPassword) {
 		return c.JSON(http.StatusForbidden, platform.AccessForbidden())
@@ -121,6 +127,17 @@ func (h *Handler) Change(c echo.Context) error {
 	a.Password = hash
 	if err := h.accountStore.Update(a); err != nil {
 		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
+	}
+	ert, er := h.revokedTokenStore.GetByJti(rt.Jti)
+	if er != nil {
+		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
+	}
+	if ert != nil {
+		return c.JSON(http.StatusOK, newAccountResponse(a))
+	}
+
+	if er := h.revokedTokenStore.Create(&rt); er != nil {
+		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
 	return c.JSON(http.StatusOK, passwordChangeResponse(a))
 }
@@ -137,6 +154,7 @@ func (h *Handler) GetCurrentAccount(c echo.Context) error {
 }
 
 func (h *Handler) UpdateAccount(c echo.Context) error {
+
 	a, err := h.accountStore.GetByID(getAccountIDFromToken(c))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
