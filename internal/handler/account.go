@@ -31,11 +31,14 @@ func (h *Handler) SignUp(c echo.Context) error {
 	if err := h.accountStore.Create(&a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
-	pinResp := generatePin(&p)
+
+	pinResp := generatePin()
+
 	p.ExpiredAt = pinResp.expiredAt
 	p.Pin = pinResp.pin
 	p.EmailAddress = a.EmailAddress
 	p.Purpose = "SignUp"
+
 	if err = h.pinStore.Create(&p); err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -170,7 +173,7 @@ func (h *Handler) ForgotPassword(c echo.Context) error {
 	if a == nil {
 		return c.JSON(http.StatusForbidden, platform.AccessForbidden())
 	}
-	pinGen := generatePin(&p)
+	pinGen := generatePin()
 	p.ExpiredAt = pinGen.expiredAt
 	p.Pin = pinGen.pin
 	p.Purpose = "forgotten"

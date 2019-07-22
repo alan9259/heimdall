@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"fmt"
 	"log"
 	model "miu-auth-api-v1/internal/model"
 	platform "miu-auth-api-v1/internal/platform"
+	"strconv"
 )
 
 func (h *Handler) sendVerifyEmail(a *model.Account, p *model.Pin) error {
@@ -21,11 +21,12 @@ func (h *Handler) sendVerifyEmail(a *model.Account, p *model.Pin) error {
 	content := ""
 	if p.Purpose == "SignUp" {
 		content = "Hi " + a.FirstName + ", <br><br>" + "Thank you for signing up, " +
-			"please verify your email address by entering the verification code: " + fmt.Sprint(p.Pin) + " in your app." + "<br><br>" + "MIU"
+			"please verify your email address by entering the verification code: " + strconv.Itoa(int(p.Pin)) + " in your app." + "<br><br>" + "MIU"
 	} else {
 		content = "Hi " + a.FirstName + ", <br><br>" + "You've forgotten your password! " +
-			"You will find the reset password screen after entering the verification code: " + fmt.Sprint(p.Pin) + " in your app." + "<br><br>" + "MIU"
+			"You will find the reset password screen after entering the verification code: " + strconv.Itoa(int(p.Pin)) + " in your app." + "<br><br>" + "MIU"
 	}
+
 	err = platform.SendEmail(
 		sender,
 		senderEmail,
