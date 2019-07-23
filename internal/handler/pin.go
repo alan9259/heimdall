@@ -2,7 +2,6 @@ package handler
 
 import (
 	"math/rand"
-	"miu-auth-api-v1/internal/model"
 	"miu-auth-api-v1/internal/platform"
 	"net/http"
 
@@ -44,7 +43,7 @@ func (h *Handler) ValidatePin(c echo.Context) error {
 	return c.JSON(http.StatusAccepted, newPinValidateResponse(a.ID, "Pin validated successfully"))
 }
 
-func generatePin(p *model.Pin) *pinGenerateResponse {
+func generatePin() *pinGenerateResponse {
 	resp := new(pinGenerateResponse)
 	t := time.Now()
 	resp.pin = int32(rand.Intn(10000))
