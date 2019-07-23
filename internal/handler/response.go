@@ -3,6 +3,7 @@ package handler
 import (
 	"miu-auth-api-v1/internal/model"
 	"miu-auth-api-v1/internal/platform"
+	"time"
 )
 
 type accountResponse struct {
@@ -40,8 +41,8 @@ func passwordChangeResponse(a *model.Account) *changeResponse {
 }
 
 type forgotPasswordResponse struct {
-	Message string `json: message`
-	Status  string `json: code`
+	Message string `json:"message"`
+	Status  string `json:"code"`
 }
 
 func requestForgotPasswordResponse() *forgotPasswordResponse {
@@ -49,4 +50,20 @@ func requestForgotPasswordResponse() *forgotPasswordResponse {
 	resp.Message = "We have sent you an email with a reset code for verification."
 	resp.Status = "200"
 	return resp
+}
+
+type pinValidateResponse struct {
+	Status    int32
+	Message   string
+	Token     string
+	ExpiredAt time.Time
+}
+
+func newPinValidateResponse(id int32, message string) *pinValidateResponse {
+	r := new(pinValidateResponse)
+	r.ExpiredAt = time.Now().AddDate(0, 0, 3)
+	r.Message = message
+	r.Status = 200
+	r.Token = platform.GenerateJWTToken(id)
+	return r
 }

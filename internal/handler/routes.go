@@ -16,6 +16,7 @@ func (h *Handler) Register(v1 *echo.Group) {
 	guestUsers.POST("/change", h.Change)
 	guestUsers.POST("/verify", h.Verify)
 	guestUsers.POST("/forgot", h.ForgotPassword)
+	guestUsers.POST("/validate-pin", h.ValidatePin)
 
 	profiles := v1.Group("/profiles", jwtMiddleware)
 	profiles.GET("/current", h.GetCurrentAccount)

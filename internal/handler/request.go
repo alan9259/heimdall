@@ -144,3 +144,18 @@ func (r *forgotPasswordRequest) bind(c echo.Context, p *model.Pin) error {
 	p.EmailAddress = r.EmailAddress
 	return nil
 }
+
+type pinValidateRequest struct {
+	EmailAddress string `json:"email_address" validate:"required,email"`
+	Pin          int32  `json:"pin" validate:"required"`
+}
+
+func (r *pinValidateRequest) bind(c echo.Context) error {
+	if err := c.Bind(r); err != nil {
+		return err
+	}
+	if err := c.Validate(r); err != nil {
+		return err
+	}
+	return nil
+}
