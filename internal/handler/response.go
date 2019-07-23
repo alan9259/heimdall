@@ -18,6 +18,37 @@ func newAccountResponse(a *model.Account) *accountResponse {
 	return r
 }
 
+type currentAccountResponse struct {
+	ID             int32     `json:"id,omitempty"`
+	EmailAddress   string    `json:"email_address,omitempty"`
+	FirstName      string    `json:"first_name,omitempty"`
+	LastName       string    `json:"last_name,omitempty"`
+	PhoneNumber    string    `json:"phone_number,omitempty"`
+	DateOfBirth    time.Time `json:"date_of_birth,omitempty"`
+	Gender         string    `json:"gender,omitempty"`
+	CreatedAt      time.Time `json:"create_at,omitempty"`
+	VerifiedAt     time.Time `json:"verified_at,omitempty"`
+	LastLoginAt    time.Time `json:"last_login_at,omitempty"`
+	LastModifiedAt time.Time `json:"last_modified_at,omitempty"`
+}
+
+func newCurrentAccountResponse(a *model.Account) *currentAccountResponse {
+	r := new(currentAccountResponse)
+	r.ID = a.ID
+	r.EmailAddress = a.EmailAddress
+	r.FirstName = a.FirstName
+	r.LastName = a.LastName
+	r.PhoneNumber = a.PhoneNumber
+	r.DateOfBirth = a.DateOfBirth
+	r.Gender = a.Gender.Name
+	r.CreatedAt = a.CreatedAt
+	r.VerifiedAt = a.VerifiedAt
+	r.LastLoginAt = a.LastLoginAt
+	r.LastModifiedAt = a.LastModifiedAt
+
+	return r
+}
+
 type genericResponse struct {
 	Message string `json:"message"`
 }
