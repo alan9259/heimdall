@@ -26,7 +26,7 @@ func (as *AccountStore) Update(a *model.Account) error {
 
 func (as *AccountStore) GetByID(id uint) (*model.Account, error) {
 	var m model.Account
-	if err := as.db.First(&m, id).Error; err != nil {
+	if err := as.db.Preload("Gender").First(&m, id).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return nil, nil
 		}
