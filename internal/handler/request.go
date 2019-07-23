@@ -133,14 +133,13 @@ type forgotPasswordRequest struct {
 	EmailAddress string `json:"email_address" validate:"required,email"`
 }
 
-func (r *forgotPasswordRequest) bind(c echo.Context, p *model.Pin) error {
+func (r *forgotPasswordRequest) bind(c echo.Context) error {
 	if err := c.Bind(r); err != nil {
 		return err
 	}
 	if err := c.Validate(r); err != nil {
 		return err
 	}
-	p.EmailAddress = r.EmailAddress
 	return nil
 }
 
