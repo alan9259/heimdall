@@ -13,7 +13,7 @@ func (h *Handler) Register(v1 *echo.Group) {
 	guestUsers.POST("", h.SignUp)
 	guestUsers.POST("/login", h.Login)
 	guestUsers.POST("/logout", h.Logout, jwtMiddleware)
-	guestUsers.POST("/change", h.Change)
+	guestUsers.POST("/change", h.Change, jwtMiddleware)
 	guestUsers.POST("/verify", h.Verify)
 	guestUsers.POST("/forgot", h.ForgotPassword)
 	guestUsers.POST("/validate-pin", h.ValidatePin)

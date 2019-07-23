@@ -13,6 +13,7 @@ import (
 
 func (h *Handler) SignUp(c echo.Context) error {
 	var a model.Account
+	var p model.Pin
 	req := &registerRequest{}
 	if err := req.bind(c, &a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
@@ -31,10 +32,18 @@ func (h *Handler) SignUp(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
 
-	err = h.sendVerifyEmail(&a)
+	pinResp := generatePin()
 
-	if err != nil {
-		return c.JSON(http.StatusCreated, platform.NewHttpError(err))
+	p.ExpiredAt = pinResp.expiredAt
+	p.Pin = pinResp.pin
+	p.EmailAddress = a.EmailAddress
+	p.Purpose = "SignUp"
+
+	if err = h.pinStore.Create(&p); err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	if err = h.sendVerifyEmail(&a, &p); err != nil {
+		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
 	}
 
 	return c.JSON(http.StatusCreated, newAccountResponse(&a))
@@ -94,6 +103,12 @@ func (h *Handler) Logout(c echo.Context) error {
 }
 
 func (h *Handler) Change(c echo.Context) error {
+	var rt model.RevokedToken
+	rt.AccountId = int32(getAccountIDFromToken(c))
+	rt.ExpiredAt = getExpFromToken(c)
+	rt.Jti = getJtiFromToken(c)
+	rt.Token = getToken(c)
+	rt.RevokedAt = time.Now().UTC()
 	req := &changeRequest{}
 	if err := req.bind(c); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
@@ -103,7 +118,7 @@ func (h *Handler) Change(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
 	}
 	if a == nil {
-		return c.JSON(http.StatusNotFound, platform.NewHttpError(err))
+		return c.JSON(http.StatusNotFound, nil)
 	}
 	if !a.CheckPassword(req.OldPassword) {
 		return c.JSON(http.StatusForbidden, platform.AccessForbidden())
@@ -115,6 +130,17 @@ func (h *Handler) Change(c echo.Context) error {
 	a.Password = hash
 	if err := h.accountStore.Update(a); err != nil {
 		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
+	}
+	ert, er := h.revokedTokenStore.GetByJti(rt.Jti)
+	if er != nil {
+		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
+	}
+	if ert != nil {
+		return c.JSON(http.StatusOK, newAccountResponse(a))
+	}
+
+	if er := h.revokedTokenStore.Create(&rt); er != nil {
+		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
 	return c.JSON(http.StatusOK, passwordChangeResponse(a))
 }
@@ -131,6 +157,7 @@ func (h *Handler) GetCurrentAccount(c echo.Context) error {
 }
 
 func (h *Handler) UpdateAccount(c echo.Context) error {
+
 	a, err := h.accountStore.GetByID(getAccountIDFromToken(c))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
@@ -164,12 +191,17 @@ func (h *Handler) ForgotPassword(c echo.Context) error {
 	if a == nil {
 		return c.JSON(http.StatusForbidden, platform.AccessForbidden())
 	}
-	pinGen := generatePin(&p)
+	pinGen := generatePin()
 	p.ExpiredAt = pinGen.expiredAt
 	p.Pin = pinGen.pin
 	p.Purpose = "forgotten"
 
 	if err := h.pinStore.Create(&p); err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	//TODO Send email
+	emErr := h.sendVerifyEmail(a, &p)
+	if emErr != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 

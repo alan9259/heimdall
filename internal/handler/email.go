@@ -4,9 +4,10 @@ import (
 	"log"
 	model "miu-auth-api-v1/internal/model"
 	platform "miu-auth-api-v1/internal/platform"
+	"strconv"
 )
 
-func (h *Handler) sendVerifyEmail(a *model.Account) error {
+func (h *Handler) sendVerifyEmail(a *model.Account, p *model.Pin) error {
 	key, err := h.configStore.GetApiKey("sendgridApikey")
 
 	if err != nil {
@@ -17,9 +18,14 @@ func (h *Handler) sendVerifyEmail(a *model.Account) error {
 	sender := "MIU"
 	senderEmail := "alan9259@gmail.com"
 	subject := "Thank you for signing up"
-	url := "http://miu.com"
-	content := "Hi " + a.FirstName + ", <br><br>" + "Thank you for signing up, " +
-		"please verify your email address by clicking " + url + "<br><br>" + "MIU"
+	content := ""
+	if p.Purpose == "SignUp" {
+		content = "Hi " + a.FirstName + ", <br><br>" + "Thank you for signing up, " +
+			"please verify your email address by entering the verification code: " + strconv.Itoa(int(p.Pin)) + " in your app." + "<br><br>" + "MIU"
+	} else {
+		content = "Hi " + a.FirstName + ", <br><br>" + "You've forgotten your password! " +
+			"You will find the reset password screen after entering the verification code: " + strconv.Itoa(int(p.Pin)) + " in your app." + "<br><br>" + "MIU"
+	}
 
 	err = platform.SendEmail(
 		sender,
