@@ -42,7 +42,7 @@ func (h *Handler) ValidatePin(c echo.Context) error {
 		return c.JSON(http.StatusForbidden, platform.AccessForbidden())
 	}
 
-	if (a.VerifiedAt == time.Time{}) {
+	if a.VerifiedAt.IsZero() {
 		a.VerifiedAt = time.Now()
 		if err := h.accountStore.Update(a); err != nil {
 			return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
