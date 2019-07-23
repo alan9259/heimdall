@@ -181,7 +181,35 @@ func (h *Handler) ForgotPassword(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 
-	return c.JSON(http.StatusOK, requestForgotPasswordResponse())
+	return c.JSON(http.StatusOK, newForgotPasswordResponse())
+}
+
+func (h *Handler) Verify(c echo.Context) error {
+	req := &verifyEmailRequest{}
+
+	if err := req.bind(c); err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
+	}
+	a, err := h.accountStore.GetByEmail(req.EmailAddress)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, platform.NewHttpError(err))
+	}
+	if a == nil {
+		return c.JSON(http.StatusForbidden, platform.AccessForbidden())
+	}
+
+	p, err := h.generatePin(req.EmailAddress, "verify")
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	err = h.sendVerifyEmail(a, p)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, newVerifyEmailResponse())
 }
 
 //private func
@@ -227,9 +255,4 @@ func newRevokedToken(c echo.Context) *model.RevokedToken {
 	rt.RevokedAt = time.Now().UTC()
 
 	return &rt
-}
-
-func (h *Handler) Verify(c echo.Context) error {
-	//req := &verifyEmailRequest{}
-	return c.JSON(http.StatusOK, newGenericResponse("Success"))
 }

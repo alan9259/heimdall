@@ -82,20 +82,6 @@ func (r *accountUpdateRequest) bind(c echo.Context, a *model.Account) error {
 	return nil
 }
 
-type verifyEmailRequest struct {
-	Token string `json:"token" validate:"required"`
-}
-
-func (r *verifyEmailRequest) bind(c echo.Context) error {
-	if err := c.Bind(r); err != nil {
-		return err
-	}
-	if err := c.Validate(r); err != nil {
-		return err
-	}
-	return nil
-}
-
 type changeRequest struct {
 	EmailAddress string `json:"email_address" validate:"required,email"`
 	OldPassword  string `json:"old_password" validate:"required"`
@@ -113,27 +99,25 @@ func (r *changeRequest) bind(c echo.Context) error {
 	return nil
 }
 
-// type revokeTokenRequest struct {
-// 	Token string `json:"token" validate:"required"`
-// }
-
-// func (r *revokeTokenRequest) bind(c echo.Context, rt *model.RevokedToken) error {
-// 	if err := c.Bind(r); err != nil {
-// 		return err
-// 	}
-// 	if err := c.Validate(r); err != nil {
-// 		return err
-// 	}
-
-// 	rt.Token = r.Token
-// 	return nil
-// }
-
 type forgotPasswordRequest struct {
 	EmailAddress string `json:"email_address" validate:"required,email"`
 }
 
 func (r *forgotPasswordRequest) bind(c echo.Context) error {
+	if err := c.Bind(r); err != nil {
+		return err
+	}
+	if err := c.Validate(r); err != nil {
+		return err
+	}
+	return nil
+}
+
+type verifyEmailRequest struct {
+	EmailAddress string `json:"email_address" validate:"required,email"`
+}
+
+func (r *verifyEmailRequest) bind(c echo.Context) error {
 	if err := c.Bind(r); err != nil {
 		return err
 	}

@@ -45,9 +45,21 @@ type forgotPasswordResponse struct {
 	Status  string `json:"code"`
 }
 
-func requestForgotPasswordResponse() *forgotPasswordResponse {
+func newForgotPasswordResponse() *forgotPasswordResponse {
 	resp := new(forgotPasswordResponse)
 	resp.Message = "We have sent you an email with a reset code for verification."
+	resp.Status = "200"
+	return resp
+}
+
+type verifyEmailResponse struct {
+	Message string `json:"message"`
+	Status  string `json:"code"`
+}
+
+func newVerifyEmailResponse() *verifyEmailResponse {
+	resp := new(verifyEmailResponse)
+	resp.Message = "We have sent you an email with a code for verification."
 	resp.Status = "200"
 	return resp
 }
