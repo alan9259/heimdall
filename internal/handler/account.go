@@ -83,7 +83,7 @@ func (h *Handler) Logout(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
 
-	return c.JSON(http.StatusCreated, newGenericResponse("Logout successfully!"))
+	return c.JSON(http.StatusOK, newGenericResponse("Logout successfully!"))
 }
 
 func (h *Handler) Change(c echo.Context) error {
@@ -132,7 +132,7 @@ func (h *Handler) GetCurrentAccount(c echo.Context) error {
 	if a == nil {
 		return c.JSON(http.StatusNotFound, platform.NotFound())
 	}
-	return c.JSON(http.StatusOK, newAccountResponse(a))
+	return c.JSON(http.StatusOK, newCurrentAccountResponse(a))
 }
 
 func (h *Handler) UpdateAccount(c echo.Context) error {
@@ -153,7 +153,7 @@ func (h *Handler) UpdateAccount(c echo.Context) error {
 	if err := h.accountStore.Update(a); err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
-	return c.JSON(http.StatusOK, newAccountResponse(a))
+	return c.NoContent(http.StatusNoContent)
 }
 
 func (h *Handler) ForgotPassword(c echo.Context) error {
