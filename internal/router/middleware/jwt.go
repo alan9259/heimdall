@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"miu-auth-api-v1/internal/platform"
-	"miu-auth-api-v1/internal/store"
+	"miu-auth-api-v1/internal/revokedToken"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
@@ -27,13 +27,13 @@ var (
 	ErrJWTInvalid = echo.NewHTTPError(http.StatusForbidden, "invalid or expired jwt")
 )
 
-func JWT(key interface{}) echo.MiddlewareFunc {
+func JWT(key interface{}, rts revokedToken.Store) echo.MiddlewareFunc {
 	c := JWTConfig{}
 	c.SigningKey = key
-	return JWTWithConfig(c)
+	return JWTWithConfig(c, rts)
 }
 
-func JWTWithConfig(config JWTConfig) echo.MiddlewareFunc {
+func JWTWithConfig(config JWTConfig, rts revokedToken.Store) echo.MiddlewareFunc {
 	extractor := jwtFromHeader("Authorization", "Bearer")
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
@@ -56,8 +56,6 @@ func JWTWithConfig(config JWTConfig) echo.MiddlewareFunc {
 				return c.JSON(http.StatusForbidden, platform.NewHttpError(ErrJWTInvalid))
 			}
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-				d := platform.New()
-				rts := store.NewRevokedTokenStore(d)
 				accountID := uint(claims["id"].(float64))
 				jti, err := uuid.Parse(claims["jti"].(string))
 				if err != nil {

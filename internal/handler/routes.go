@@ -8,7 +8,7 @@ import (
 )
 
 func (h *Handler) Register(v1 *echo.Group) {
-	jwtMiddleware := middleware.JWT(platform.JWTSecret)
+	jwtMiddleware := middleware.JWT(platform.JWTSecret, h.revokedTokenStore)
 	guestUsers := v1.Group("/accounts")
 	guestUsers.POST("", h.SignUp)
 	guestUsers.POST("/login", h.Login)
@@ -32,6 +32,7 @@ func (h *Handler) Register(v1 *echo.Group) {
 			},
 			SigningKey: platform.JWTSecret,
 		},
+		h.revokedTokenStore,
 	))
 
 	locations.POST("", h.SignUp)
