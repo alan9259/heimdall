@@ -1,11 +1,11 @@
 package handler
 
 import (
-	account "miu-auth-api-v1/internal/account"
-	config "miu-auth-api-v1/internal/config"
-	location "miu-auth-api-v1/internal/location"
-	"miu-auth-api-v1/internal/pin"
-	revokedToken "miu-auth-api-v1/internal/revokedToken"
+	account "heimdall/internal/account"
+	config "heimdall/internal/config"
+	location "heimdall/internal/location"
+	"heimdall/internal/pin"
+	revokedToken "heimdall/internal/revokedToken"
 )
 
 type Handler struct {

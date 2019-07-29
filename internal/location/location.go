@@ -1,7 +1,7 @@
 package location
 
 import (
-	"miu-auth-api-v1/internal/model"
+	"heimdall/internal/model"
 )
 
 type Store interface {

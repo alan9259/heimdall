@@ -1,12 +1,10 @@
 package handler
 
 import (
+	"heimdall/internal/model"
+	"heimdall/internal/platform"
 	"math/rand"
-	"miu-auth-api-v1/internal/model"
-	"miu-auth-api-v1/internal/platform"
 	"net/http"
-	"strconv"
-	"strings"
 
 	"time"
 
@@ -60,7 +58,7 @@ func (h *Handler) generatePin(email string, purpose string) (*model.Pin, error) 
 	p.Pin = int32(rand.Intn(1000000)) //add a minimum
 	p.Purpose = purpose
 	p.EmailAddress = email
-	s := strconv.Itoa(int(p.Pin))
+	//s := strconv.Itoa(int(p.Pin))
 
 	if err := h.pinStore.Create(&p); err != nil {
 		return nil, err
@@ -68,16 +66,17 @@ func (h *Handler) generatePin(email string, purpose string) (*model.Pin, error) 
 
 	return &p, nil
 }
-func padZeros(int p) (p int) {
-	var ap = []int32{P}
-	s := strings.Split(str, "")
-	l := len(str)
-	for l < 6 {
-		s = append(ap, str)
-		str = strings.Join(s, "")
-		l = len(str)
-	}
-}
+
+// func padZeros(int p) (p int) {
+// 	var ap = []int32{P}
+// 	s := strings.Split(str, "")
+// 	l := len(str)
+// 	for l < 6 {
+// 		s = append(ap, str)
+// 		str = strings.Join(s, "")
+// 		l = len(str)
+// 	}
+// }
 
 /*
 str := "1234"

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"miu-auth-api-v1/internal/handler"
-	"miu-auth-api-v1/internal/platform"
-	"miu-auth-api-v1/internal/router"
-	"miu-auth-api-v1/internal/store"
+	"heimdall/internal/handler"
+	"heimdall/internal/platform"
+	"heimdall/internal/router"
+	"heimdall/internal/store"
 )
 
 func main() {
@@ -30,7 +30,7 @@ func main() {
 /*import (
 	"encoding/json"
 	"log"
-	model "miu-auth-api-v1/internal/model"
+	model "heimdall/internal/model"
 	"net/http"
 
 	"github.com/gorilla/mux"

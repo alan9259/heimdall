@@ -1,8 +1,8 @@
 package handler
 
 import (
-	model "miu-auth-api-v1/internal/model"
-	platform "miu-auth-api-v1/internal/platform"
+	model "heimdall/internal/model"
+	platform "heimdall/internal/platform"
 	"net/http"
 	"time"
 

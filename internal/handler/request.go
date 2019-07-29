@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"miu-auth-api-v1/internal/model"
+	"heimdall/internal/model"
 	"time"
 
 	"github.com/labstack/echo"

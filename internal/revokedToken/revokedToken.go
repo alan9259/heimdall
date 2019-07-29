@@ -1,7 +1,7 @@
 package revokedToken
 
 import (
-	"miu-auth-api-v1/internal/model"
+	"heimdall/internal/model"
 
 	"github.com/google/uuid"
 )

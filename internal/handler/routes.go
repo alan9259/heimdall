@@ -1,8 +1,8 @@
 package handler
 
 import (
-	platform "miu-auth-api-v1/internal/platform"
-	middleware "miu-auth-api-v1/internal/router/middleware"
+	platform "heimdall/internal/platform"
+	middleware "heimdall/internal/router/middleware"
 
 	"github.com/labstack/echo"
 )

@@ -1,7 +1,7 @@
 package store
 
 import (
-	"miu-auth-api-v1/internal/model"
+	"heimdall/internal/model"
 
 	"github.com/jinzhu/gorm"
 )

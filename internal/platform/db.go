@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"miu-auth-api-v1/internal/model"
+	"heimdall/internal/model"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"

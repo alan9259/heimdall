@@ -1,6 +1,6 @@
 package pin
 
-import "miu-auth-api-v1/internal/model"
+import "heimdall/internal/model"
 
 type Store interface {
 	Create(*model.Pin) error
