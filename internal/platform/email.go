@@ -8,14 +8,32 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func SendEmail(
+type EmailService struct {
+	client *sendgrid.Client
+	isMock bool
+}
+
+func NewEmailService(key string, isMock bool) *EmailService {
+	if isMock {
+		return &EmailService{
+			client: nil,
+			isMock: isMock,
+		}
+	} else {
+		return &EmailService{
+			client: sendgrid.NewSendClient(key),
+			isMock: isMock,
+		}
+	}
+}
+
+func (es *EmailService) SendEmail(
 	sender string,
 	senderEmail string,
 	subject string,
 	receiver string,
 	receiverEmail string,
-	emailContent string,
-	key string) error {
+	emailContent string) error {
 
 	if len(sender) == 0 {
 		log.Println("You must specify a sender name")
@@ -54,17 +72,20 @@ func SendEmail(
 	htmlContent := "<strong>" + emailContent + "</strong>"
 	message := mail.NewSingleEmail(from, emailTitle, to, plainTextContent, htmlContent)
 
-	client := sendgrid.NewSendClient(key) // key was passed in as env variable
+	//client := sendgrid.NewSendClient(key) // key was passed in as env variable
+	if !es.isMock {
 
-	response, err := client.Send(message)
+		response, err := es.client.Send(message)
 
-	if err != nil {
-		log.Println(err)
-		return err
-	} else {
-		log.Println(response.StatusCode)
-		log.Println(response.Body)
-		log.Println(response.Headers)
+		if err != nil {
+			log.Println(err)
+			return err
+		} else {
+			log.Println(response.StatusCode)
+			log.Println(response.Body)
+			log.Println(response.Headers)
+		}
+
 	}
 
 	return nil

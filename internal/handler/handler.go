@@ -1,11 +1,12 @@
 package handler
 
 import (
-	account "heimdall/internal/account"
-	config "heimdall/internal/config"
-	location "heimdall/internal/location"
-	"heimdall/internal/pin"
-	revokedToken "heimdall/internal/revokedToken"
+	"heimdall/internal/interface/account"
+	"heimdall/internal/interface/config"
+	"heimdall/internal/interface/email"
+	"heimdall/internal/interface/location"
+	"heimdall/internal/interface/pin"
+	"heimdall/internal/interface/revokedToken"
 )
 
 type Handler struct {
@@ -14,6 +15,7 @@ type Handler struct {
 	configStore       config.Store
 	pinStore          pin.Store
 	revokedTokenStore revokedToken.Store
+	emailService      email.Service
 }
 
 func NewHandler(
@@ -21,12 +23,14 @@ func NewHandler(
 	ls location.Store,
 	cs config.Store,
 	ps pin.Store,
-	rts revokedToken.Store) *Handler {
+	rts revokedToken.Store,
+	es email.Service) *Handler {
 	return &Handler{
 		accountStore:      as,
 		locationStore:     ls,
 		configStore:       cs,
 		pinStore:          ps,
 		revokedTokenStore: rts,
+		emailService:      es,
 	}
 }

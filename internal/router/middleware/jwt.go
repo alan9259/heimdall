@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"heimdall/internal/interface/revokedToken"
 	"heimdall/internal/platform"
-	"heimdall/internal/revokedToken"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"

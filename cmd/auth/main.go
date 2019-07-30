@@ -5,10 +5,10 @@ import (
 	"heimdall/internal/platform"
 	"heimdall/internal/router"
 	"heimdall/internal/store"
+	"log"
 )
 
 func main() {
-
 	r := router.New()
 	v1 := r.Group("/api")
 
@@ -21,7 +21,16 @@ func main() {
 	ps := store.NewPinStore(d)
 	rts := store.NewRevokedTokenStore(d)
 
-	h := handler.NewHandler(as, ls, cs, ps, rts)
+	key, err := cs.GetApiKey("sendgridApikey")
+
+	if err != nil {
+		log.Println("Error: Failed to fetch sendgrid api key from database")
+		panic(err)
+	}
+
+	es := platform.NewEmailService(key.Value, false)
+
+	h := handler.NewHandler(as, ls, cs, ps, rts, es)
 
 	h.Register(v1)
 	r.Logger.Fatal(r.Start("127.0.0.1:8585"))

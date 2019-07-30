@@ -12,8 +12,14 @@ import (
 )
 
 func New() *gorm.DB {
-	db, err := gorm.Open("postgres", "host=localhost password=WorkHappily123 user=postgres dbname=dbmessyitup sslmode=disable connect_timeout=30")
-	//defer db.Close()
+	dbDSN := os.Getenv("MIU_DSN")
+	if dbDSN == "" {
+		dbDSN = "host=localhost user=postgres password=WorkHappily123 dbname=dbmessyitup sslmode=disable connect_timeout=30"
+	}
+	db, err := gorm.Open(
+		"postgres",
+		dbDSN)
+
 	if err != nil {
 		log.Fatalln("Can't connect to the db: ", err)
 		fmt.Println("storage err: ", err)
@@ -23,30 +29,35 @@ func New() *gorm.DB {
 	return db
 }
 
-func TestDB() *gorm.DB {
+func InitTestDB() *gorm.DB {
+	dbDSN := os.Getenv("MIU_DSN")
+	if dbDSN == "" {
+		dbDSN = "host=localhost user=postgres password=WorkHappily123 db.name=dbmessyitup_test sslmode=disable connect_timeout=30"
+	}
 	db, err := gorm.Open(
 		"postgres",
-		"host=localhost password=WorkHappily123 user=postgres dbname=dbmessyitup sslmode=disable connect_timeout=30")
+		dbDSN)
 
 	if err != nil {
 		log.Fatalln("Can't connect to the db: ", err)
 		fmt.Println("storage err: ", err)
 	}
-	defer func() {
-		if err := db.Close(); err != nil {
-			log.Fatalln("Can't close the db connection: ", err)
-		}
-	}()
 
-	//db.DB().SetMaxIdleConns(3)
+	// defer func() {
+	// 	if err := db.Close(); err != nil {
+	// 		log.Fatalln("Can't close the db connection: ", err)
+	// 	}
+	// }()
+
+	db.DB().SetMaxIdleConns(3)
 	db.LogMode(false)
 	return db
 }
 
 func DropTestDB() error {
-	if err := os.Remove("./../realworld_test.db"); err != nil {
-		return err
-	}
+	// if err := os.Remove("./../realworld_test.db"); err != nil {
+	// 	return err
+	// }
 	return nil
 }
 

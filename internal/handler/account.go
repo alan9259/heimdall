@@ -31,7 +31,7 @@ func (h *Handler) SignUp(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, platform.NewHttpError(err))
 	}
 
-	p, err := h.generatePin(req.EmailAddress, "SignUp")
+	p, err := h.generatePin(req.EmailAddress, "verify")
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
