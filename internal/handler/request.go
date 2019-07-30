@@ -78,6 +78,7 @@ func (r *accountUpdateRequest) bind(c echo.Context, a *model.Account) error {
 	a.PhoneNumber = r.PhoneNumber
 	a.DateOfBirth = r.DateOfBirth
 	a.GenderID = r.GenderID
+	a.Gender.ID = r.GenderID
 
 	return nil
 }

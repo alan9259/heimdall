@@ -21,7 +21,7 @@ func (as *AccountStore) Create(a *model.Account) error {
 }
 
 func (as *AccountStore) Update(a *model.Account) error {
-	return as.db.Model(a).Update(a).Error
+	return as.db.Set("gorm:association_autoupdate", false).Model(a).Update(a).Error
 }
 
 func (as *AccountStore) GetByID(id uint) (*model.Account, error) {
