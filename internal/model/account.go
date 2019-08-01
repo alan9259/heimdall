@@ -24,9 +24,9 @@ type Account struct {
 	LastLoginAt    time.Time
 	LastModifiedAt time.Time
 
-	Devices []Device `json:"device_list,omitempty"`
+	Devices []Device `gorm:"many2many:account_devices;" json:"device_list,omitempty"`
 
-	Locations     []Location `gorm:"many2many:account_devices;" json:"location_list,omitempty"`
+	Locations     []Location `json:"location_list,omitempty"`
 	RevokedTokens []RevokedToken
 }
 
