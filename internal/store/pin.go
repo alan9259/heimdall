@@ -32,15 +32,14 @@ func (ps *PinStore) GetByCompositeKey(e string, p int32) (*model.Pin, error) {
 }
 
 func (ps *PinStore) RemovePin(e string, p int32) error {
-	if err := ps.db.Where(&model.Pin{EmailAddress: e, Pin: p}).Delete(&model.Pin); err != nil {
-		if gorm.ErrRecordNotFound(err) {
-			return err
-		}
-		}
+	var pn model.Pin
+	if err := ps.db.Where(&model.Pin{EmailAddress: e, Pin: p}).Delete(&pn).Error; err != nil {
+		return err
 	}
+	return nil
 }
 
-func (ps *PinStore) GetCurrentPins(e string) ([]*model.Pin, error) {
+func (ps *PinStore) GetCurrentPins(e string) (*[]model.Pin, error) {
 	var pn []model.Pin
 	if err := ps.db.Where(&model.Pin{EmailAddress: e}).Find(&pn).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -48,5 +47,5 @@ func (ps *PinStore) GetCurrentPins(e string) ([]*model.Pin, error) {
 		}
 		return nil, err
 	}
-	return &pn
+	return &pn, nil
 }
