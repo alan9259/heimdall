@@ -9,7 +9,15 @@ import (
 func (h *Handler) sendVerifyEmail(a *model.Account, p *model.Pin) error {
 	sender := "MIU"
 	senderEmail := "alan9259@gmail.com"
-	subject := "Thank you for signing up"
+	s := p.Purpose
+	var subject string
+	switch s {
+	case "forgot":
+		subject = "Reset Your Password"
+	default:
+		subject = "Thank you for signing up"
+	}
+
 	content := ""
 	strPin := strconv.Itoa(int(p.Pin))
 	if p.Purpose == "verify" {
