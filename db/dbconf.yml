@@ -1,0 +1,3 @@
+development:
+    driver: postgres
+    open: user=postgres password=WorkHappily123 dbname=dbmessyitup sslmode=disable
