@@ -111,7 +111,6 @@ func TestUpdateAccountMultipleFields(t *testing.T) {
 			"date_of_birth": "1985-04-28T10:00:00Z"
 		}`
 	)
-
 	jwtMiddleware := middleware.JWT(platform.JWTSecret, h.revokedTokenStore)
 	req := httptest.NewRequest(echo.PUT, "/api/profiles", strings.NewReader(account1UpdateReq))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
