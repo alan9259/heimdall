@@ -55,18 +55,41 @@ func (h *Handler) ValidatePin(c echo.Context) error {
 func (h *Handler) generatePin(email string, purpose string) (*model.Pin, error) {
 	p := genPin(email, purpose)
 	//Check for duplicate email, pin combinations in the DB. If there is create a new pin and remove the old duplicated pin.
+	if err := h.checkDuplicates(p); err != nil {
+		return nil, err
+	}
+	//checking for any current pins the customer has created and if they have the same purpose we remove them from the DB.
+	if err := h.compareToCurrentPins(p); err != nil {
+		return nil, err
+	}
+	if err := h.pinStore.Create(p); err != nil {
+		return nil, err
+	}
+	return p, nil
+}
+
+func genPin(email string, purpose string) *model.Pin {
+	var p model.Pin
+	p.ExpiredAt = time.Now().AddDate(0, 0, 3)
+	p.Pin = int32(rand.Intn(1000000))
+	p.Purpose = purpose
+	p.EmailAddress = email
+	return &p
+}
+
+func (h *Handler) checkDuplicates(p *model.Pin) error {
 	var pinExists = true
 	for pinExists == true {
 		prev, err := h.pinStore.GetByCompositeKey(p.EmailAddress, p.Pin)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if prev != nil {
-			p = genPin(email, purpose)
+			p = genPin(p.EmailAddress, p.Purpose)
 			if prev.Purpose == p.Purpose {
 				err = h.pinStore.RemovePin(prev.EmailAddress, prev.Pin)
 				if err != nil {
-					return nil, err
+					return err
 				}
 			}
 		}
@@ -74,33 +97,24 @@ func (h *Handler) generatePin(email string, purpose string) (*model.Pin, error) 
 			pinExists = false
 		}
 	}
-	//checking for any current pins the customer has created and if they have the same purpose we remove them from the DB.
+	return nil
+}
+
+func (h *Handler) compareToCurrentPins(p *model.Pin) error {
 	curr, err := h.pinStore.GetCurrentPins(p.EmailAddress)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if curr != nil {
 		var x int
 		for x < len(*curr) {
 			if p.Purpose == (*curr)[x].Purpose {
 				if err := h.pinStore.RemovePin((*curr)[x].EmailAddress, (*curr)[x].Pin); err != nil {
-					return nil, err
+					return err
 				}
 			}
 			x++
 		}
 	}
-	if err := h.pinStore.Create(&p); err != nil {
-		return nil, err
-	}
-	return &p, nil
-}
-
-func genPin(email string, purpose string) model.Pin {
-	var p model.Pin
-	p.ExpiredAt = time.Now().AddDate(0, 0, 3)
-	p.Pin = int32(rand.Intn(1000000))
-	p.Purpose = purpose
-	p.EmailAddress = email
-	return p
+	return nil
 }
