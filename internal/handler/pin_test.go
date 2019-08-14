@@ -59,7 +59,7 @@ func TestCompareToCurrentPins(t *testing.T) {
 	if err != nil {
 		t.Fatal("There was an error getting current pins")
 	}
-	assert.Nil(t, pins)
+	assert.Empty(t, pins)
 }
 
 func setUpMockData(t *testing.T) {
